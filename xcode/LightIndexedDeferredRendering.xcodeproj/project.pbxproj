@@ -20,6 +20,18 @@
 		53E3CDFC0E86099300238D2B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53E3CDFB0E86099300238D2B /* Carbon.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		D3BA6F1712D382A2009A6ACC /* LightIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F1612D382A2009A6ACC /* LightIndex.cpp */; };
+		D3BA6F4012D397EE009A6ACC /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F3F12D397EE009A6ACC /* World.cpp */; };
+		D3BA6F5B12D39887009A6ACC /* BlurHorizontal.frag in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F5612D39887009A6ACC /* BlurHorizontal.frag */; };
+		D3BA6F5C12D39887009A6ACC /* BlurVertical.frag in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F5712D39887009A6ACC /* BlurVertical.frag */; };
+		D3BA6F5D12D39887009A6ACC /* Lighting.frag in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F5812D39887009A6ACC /* Lighting.frag */; };
+		D3BA6F5E12D39887009A6ACC /* Lighting.vert in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F5912D39887009A6ACC /* Lighting.vert */; };
+		D3BA6F5F12D39887009A6ACC /* PassThru.vert in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6F5A12D39887009A6ACC /* PassThru.vert */; };
+		D3BA6F6012D3988C009A6ACC /* BlurHorizontal.frag in Resources */ = {isa = PBXBuildFile; fileRef = D3BA6F5612D39887009A6ACC /* BlurHorizontal.frag */; };
+		D3BA6F6112D3988C009A6ACC /* BlurVertical.frag in Resources */ = {isa = PBXBuildFile; fileRef = D3BA6F5712D39887009A6ACC /* BlurVertical.frag */; };
+		D3BA6F6212D3988C009A6ACC /* Lighting.frag in Resources */ = {isa = PBXBuildFile; fileRef = D3BA6F5812D39887009A6ACC /* Lighting.frag */; };
+		D3BA6F6312D3988C009A6ACC /* Lighting.vert in Resources */ = {isa = PBXBuildFile; fileRef = D3BA6F5912D39887009A6ACC /* Lighting.vert */; };
+		D3BA6F6412D3988C009A6ACC /* PassThru.vert in Resources */ = {isa = PBXBuildFile; fileRef = D3BA6F5A12D39887009A6ACC /* PassThru.vert */; };
+		D3BA6FBA12D39CFF009A6ACC /* Simplex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3BA6FB912D39CFF009A6ACC /* Simplex.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +56,15 @@
 		D3BA6F1212D38299009A6ACC /* LightIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LightIndex.h; path = ../include/LightIndex.h; sourceTree = SOURCE_ROOT; };
 		D3BA6F1312D38299009A6ACC /* Resources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = SOURCE_ROOT; };
 		D3BA6F1612D382A2009A6ACC /* LightIndex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LightIndex.cpp; path = ../src/LightIndex.cpp; sourceTree = SOURCE_ROOT; };
+		D3BA6F3E12D397E7009A6ACC /* World.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = World.h; path = ../include/World.h; sourceTree = SOURCE_ROOT; };
+		D3BA6F3F12D397EE009A6ACC /* World.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = World.cpp; path = ../src/World.cpp; sourceTree = SOURCE_ROOT; };
+		D3BA6F5612D39887009A6ACC /* BlurHorizontal.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BlurHorizontal.frag; path = ../resources/BlurHorizontal.frag; sourceTree = SOURCE_ROOT; };
+		D3BA6F5712D39887009A6ACC /* BlurVertical.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BlurVertical.frag; path = ../resources/BlurVertical.frag; sourceTree = SOURCE_ROOT; };
+		D3BA6F5812D39887009A6ACC /* Lighting.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Lighting.frag; path = ../resources/Lighting.frag; sourceTree = SOURCE_ROOT; };
+		D3BA6F5912D39887009A6ACC /* Lighting.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Lighting.vert; path = ../resources/Lighting.vert; sourceTree = SOURCE_ROOT; };
+		D3BA6F5A12D39887009A6ACC /* PassThru.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = PassThru.vert; path = ../resources/PassThru.vert; sourceTree = SOURCE_ROOT; };
+		D3BA6FB912D39CFF009A6ACC /* Simplex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Simplex.cpp; path = ../src/Simplex.cpp; sourceTree = SOURCE_ROOT; };
+		D3BA6FBB12D39D56009A6ACC /* Simplex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Simplex.h; path = ../include/Simplex.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +91,10 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				D3BA6F3F12D397EE009A6ACC /* World.cpp */,
 				D3BA6F1612D382A2009A6ACC /* LightIndex.cpp */,
 				00BAE6590E7ED9C10018A608 /* LightIndexedDeferredRenderingApp.cpp */,
+				D3BA6FB912D39CFF009A6ACC /* Simplex.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -126,6 +149,8 @@
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				D3BA6FBB12D39D56009A6ACC /* Simplex.h */,
+				D3BA6F3E12D397E7009A6ACC /* World.h */,
 				D3BA6F1212D38299009A6ACC /* LightIndex.h */,
 				D3BA6F1312D38299009A6ACC /* Resources.h */,
 				32CA4F630368D1EE00C91783 /* LightIndexedDeferredRendering_Prefix.pch */,
@@ -136,6 +161,11 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D3BA6F5612D39887009A6ACC /* BlurHorizontal.frag */,
+				D3BA6F5712D39887009A6ACC /* BlurVertical.frag */,
+				D3BA6F5812D39887009A6ACC /* Lighting.frag */,
+				D3BA6F5912D39887009A6ACC /* Lighting.vert */,
+				D3BA6F5A12D39887009A6ACC /* PassThru.vert */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				00CCAF14116A9FEE008396D5 /* CinderApp.icns */,
 			);
@@ -194,6 +224,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3BA6F6012D3988C009A6ACC /* BlurHorizontal.frag in Resources */,
+				D3BA6F6112D3988C009A6ACC /* BlurVertical.frag in Resources */,
+				D3BA6F6212D3988C009A6ACC /* Lighting.frag in Resources */,
+				D3BA6F6312D3988C009A6ACC /* Lighting.vert in Resources */,
+				D3BA6F6412D3988C009A6ACC /* PassThru.vert in Resources */,
 				00CCAF15116A9FEE008396D5 /* CinderApp.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +242,13 @@
 			files = (
 				00BAE65A0E7ED9C10018A608 /* LightIndexedDeferredRenderingApp.cpp in Sources */,
 				D3BA6F1712D382A2009A6ACC /* LightIndex.cpp in Sources */,
+				D3BA6F4012D397EE009A6ACC /* World.cpp in Sources */,
+				D3BA6F5B12D39887009A6ACC /* BlurHorizontal.frag in Sources */,
+				D3BA6F5C12D39887009A6ACC /* BlurVertical.frag in Sources */,
+				D3BA6F5D12D39887009A6ACC /* Lighting.frag in Sources */,
+				D3BA6F5E12D39887009A6ACC /* Lighting.vert in Sources */,
+				D3BA6F5F12D39887009A6ACC /* PassThru.vert in Sources */,
+				D3BA6FBA12D39CFF009A6ACC /* Simplex.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
