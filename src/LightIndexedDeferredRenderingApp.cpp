@@ -6,11 +6,13 @@
 #include "cinder/Area.h"
 #include "cinder/MayaCamUI.h"
 #include "cinder/Timer.h"
+#include "cinder/Rand.h"
 
 #include "World.h"
+#include "LightIndex.h"
 #include "Resources.h"
 
-#define WORLD_SIZE 64
+#define WORLD_SIZE 32
 
 using namespace ci;
 using namespace ci::app;
@@ -33,6 +35,7 @@ class LIDRApp : public AppBasic
       ci::CameraOrtho m_shadowCamera;
       
       World * m_world;
+      lidr::LightIndex * m_lightIndex;
       gl::Fbo * m_shadow;
       gl::Fbo * m_shadow2;
       ci::Area m_defaultArea;
@@ -57,6 +60,22 @@ void LIDRApp::setup()
    // Create world
    m_world = new World(WORLD_SIZE);
    m_world->buildFloatingMountain();
+   
+   // Create the light index
+   m_lightIndex = new lidr::LightIndex(getWindowWidth(), getWindowHeight());
+   
+   // Add some random lights
+   ci::Rand rand;
+   for (int i = 0; i < 10; ++i)
+   {
+      lidr::LightId id = m_lightIndex->createLight();
+      
+      m_lightIndex->setPosition(id, rand.nextFloat(-offset, offset),
+                                    rand.nextFloat(-offset, offset),
+                                    rand.nextFloat(-offset, offset));
+      m_lightIndex->setColor(id, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+      m_lightIndex->setAttenuation(id, rand.nextFloat(5.0f, 15.0f));
+   }
    
    // Create shadow targets
    m_shadow = new gl::Fbo(128, 128, true);
@@ -88,18 +107,11 @@ void LIDRApp::mouseDrag(MouseEvent event)
 
 void LIDRApp::update()
 {
-
    double timeStamp = m_timer.getSeconds();
    double dt = timeStamp - m_lastTimeStamp;
    m_lastTimeStamp = timeStamp;
-   /*
-   m_stepTime += dt;
-   if (m_stepTime > 0.2)
-   {
-      m_world->tick();
-      m_stepTime = 0.0;
-   }
-   */
+   
+   m_lightIndex->update();
 
    CameraPersp camera(m_maya.getCamera());
    camera.setPerspective(60.0f, getWindowWidth() / (float)getWindowHeight(), 1.0f, 1000.0f);
@@ -132,6 +144,26 @@ void LIDRApp::draw()
    gl::disableAlphaBlending();
    
    m_shadow->unbindTexture();
+   
+   // Update light index texture
+   gl::disableDepthWrite();
+   m_lightIndex->renderLightIndex();
+   gl::enableDepthWrite();
+   
+   // Draw debug textures
+   gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
+   
+   m_lightIndex->bindLightIndexTexture(0);
+   gl::drawSolidRect(Rectf(10, getWindowHeight() - 138, 128 * getWindowAspectRatio(), getWindowHeight() - 10));
+   m_lightIndex->unbindLightIndexTexture();
+   
+   m_lightIndex->bindPositionTexture(0);
+   gl::drawSolidRect(Rectf(10, 10, 15, 266));
+   m_lightIndex->unbindPositionTexture();
+   
+   m_lightIndex->bindColorTexture(0);
+   gl::drawSolidRect(Rectf(20, 10, 25, 266));
+   m_lightIndex->unbindColorTexture();
 }
 
 void LIDRApp::drawShadow()
