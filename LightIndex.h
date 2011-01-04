@@ -3,6 +3,7 @@
 #define LIGHT_INDEX_H
 
 #include <vector>
+#include "cinder/Surface.h"
 
 namespace lidr
 {
@@ -27,9 +28,19 @@ namespace lidr
       void setPosition(LightId id, float x, float y, float z);
       void setAttenuation(LightId id, float attenuation);
       void setColor(LightId id, unsigned char r, unsigned char g, unsigned char b);
+
+      void update();
+
+    private:
+      void updateColorSurface();
+      void updatePositionSurface();
   
     private:
       std::vector<Light> m_lights;
+      bool m_dirty;
+
+      ci::Surface32f m_positionSurface;
+      ci::Surface8u m_colorSurface;
   };
 
 }
