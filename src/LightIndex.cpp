@@ -1,14 +1,14 @@
 
 #include "LightIndex.h"
-#include <casser>
+#include <cassert>
 
 namespace lidr
 {
 
   LightIndex::LightIndex()
     : m_dirty(true),
-      m_positionSurface(1, 256),
-      m_colorSurface(1, 256)
+      m_positionSurface(1, 256, true),
+      m_colorSurface(1, 256, false)
   {
     updateColorSurface();
     updatePositionSurface();
@@ -77,7 +77,7 @@ namespace lidr
 
   void LightIndex::updateColorSurface()
   {
-    cu::Surface8u::Iter it = m_colorSurface.getIter();
+    ci::Surface8u::Iter it = m_colorSurface.getIter();
     size_t i = 0;    
 
     while (it.line())
@@ -89,15 +89,13 @@ namespace lidr
         it.r() = 0;
         it.g() = 0;
         it.b() = 0;
-        it.a() = 0;
       }
       else
       {
-        Light & light m_lights[i - 1];
+        Light & light = m_lights[i - 1];
         it.r() = light.r;
         it.g() = light.g;
         it.b() = light.b;
-        it.a() = 0;
       }
 
       i++;
@@ -106,7 +104,7 @@ namespace lidr
 
   void LightIndex::updatePositionSurface()
   {
-    cu::Surface32f::Iter it = m_positionSurface.getIter();
+    ci::Surface32f::Iter it = m_positionSurface.getIter();
     size_t i = 0;    
 
     while (it.line())
@@ -122,7 +120,7 @@ namespace lidr
       }
       else
       {
-        Light & light m_lights[i - 1];
+        Light & light = m_lights[i - 1];
         it.r() = light.x;
         it.g() = light.y;
         it.b() = light.z;
