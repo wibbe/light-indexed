@@ -6,6 +6,8 @@
 #include "cinder/Surface.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/gl/GlslProg.h"
+#include "cinder/Matrix.h"
 
 namespace lidr
 {
@@ -31,7 +33,7 @@ namespace lidr
          void setAttenuation(LightId id, float attenuation);
          void setColor(LightId id, unsigned char r, unsigned char g, unsigned char b);
          
-         void update();
+         void update(ci::Matrix44f const& view);
          void renderLightIndex();
          
          void bindLightIndexTexture(int unit);
@@ -45,7 +47,7 @@ namespace lidr
          
       private:
          void updateColorSurface();
-         void updatePositionSurface();
+         void updatePositionSurface(ci::Matrix44f const& view);
          
          void sortLights();      
          bool collideWithChannel(int channel, LightId id);
@@ -66,6 +68,8 @@ namespace lidr
          ci::gl::Texture * m_colorTex;
          
          ci::gl::Fbo * m_colorIndex;
+         
+         ci::gl::GlslProg m_colorShader;
          
          std::vector<LightId> m_channels[4];
    };

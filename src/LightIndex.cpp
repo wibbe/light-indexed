@@ -1,8 +1,10 @@
 
 #include "LightIndex.h"
+#include "Resources.h"
 
 #include "cinder/gl/gl.h"
 #include "cinder/Area.h"
+#include "cinder/app/App.h"
 
 #include <cassert>
 
@@ -15,10 +17,7 @@ namespace lidr
       : m_dirty(true),
         m_positionSurface(1, 256, true),
         m_colorSurface(1, 256, false)
-   {
-      updateColorSurface();
-      updatePositionSurface();
-      
+   {  
       // Create color index buffer, use alpha and color, but no depth
       m_colorIndex = new gl::Fbo(width, height, true, true, false);
       
@@ -29,6 +28,8 @@ namespace lidr
       m_positionTex = new gl::Texture(1, 256, positionFormat);
       
       m_colorTex = new gl::Texture(1, 256);
+      
+      m_colorShader = gl::GlslProg(app::loadResource(RES_COLOR_VERT), app::loadResource(RES_COLOR_FRAG));
    }
    
    LightIndex::~LightIndex()
@@ -114,12 +115,12 @@ namespace lidr
       m_colorTex->unbind();
    }
    
-   void LightIndex::update()
+   void LightIndex::update(Matrix44f const& view)
    {
-      if (m_dirty)
+      //if (m_dirty)
       {
          updateColorSurface();
-         updatePositionSurface();
+         updatePositionSurface(view);
          
          ci::Surface8u surface(reinterpret_cast<uint8_t*>(m_positionSurface.getData()),
                                m_positionSurface.getWidth(),
@@ -144,6 +145,8 @@ namespace lidr
       
       gl::clear(ColorA(0, 0, 0, 0), false);
       
+      m_colorShader.bind();
+      
       // Go thru all the channels and render them one by one
       for (int channel = 0; channel < 4; ++channel)
       {
@@ -155,10 +158,13 @@ namespace lidr
          {
             Light & light = getLight(*it);
             
-            gl::color(ColorA(*it, *it, *it, *it));
-            gl::drawSphere(Vec3f(light.x, light.z, light.z), light.attenuation);
+            m_colorShader.uniform("color", Vec4f(*it / 255.0, *it / 255.0, *it / 255.0, *it / 255.0));
+
+            gl::drawSphere(Vec3f(light.x, light.y, light.z), light.attenuation);
          }
       }
+      
+      m_colorShader.unbind();
       
       m_colorIndex->unbindFramebuffer();
       
@@ -234,7 +240,7 @@ namespace lidr
       }
    }
    
-   void LightIndex::updatePositionSurface()
+   void LightIndex::updatePositionSurface(Matrix44f const& view)
    {
       ci::Surface32f::Iter it = m_positionSurface.getIter();
       size_t i = 0;    
@@ -253,9 +259,12 @@ namespace lidr
          else
          {
             Light & light = m_lights[i - 1];
-            it.r() = light.x;
-            it.g() = light.y;
-            it.b() = light.z;
+            Vec3f pos = view.transformPoint(Vec3f(light.x, light.y, light.z));
+            ci::app::console() << pos << "\n";
+            
+            it.r() = pos.x;
+            it.g() = pos.y;
+            it.b() = pos.z;
             it.a() = light.attenuation;
          }
          

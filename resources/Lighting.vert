@@ -1,5 +1,7 @@
 
 varying vec3 diffuseColor;
+varying vec4 viewPos;
+varying vec4 coord;
 
 vec3 sphericalHarmonics(vec3 normal)
 {
@@ -36,6 +38,10 @@ void main()
 {
 	gl_Position = ftransform();
 	gl_TexCoord[0] = gl_MultiTexCoord0;
+   viewPos = gl_ModelViewMatrix * gl_Vertex;
+   
+   //coord = ((gl_ModelViewMatrix * gl_Vertex).xy + 1.0) * 0.5;
+   coord = ftransform();
    
    vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
    

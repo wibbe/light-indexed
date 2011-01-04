@@ -7,3 +7,6 @@
 
 #define RES_LIGHTING_VERT     CINDER_RESOURCE(../resources/, Lighting.vert, 131, GLSL)
 #define RES_LIGHTING_FRAG     CINDER_RESOURCE(../resources/, Lighting.frag, 132, GLSL)
+
+#define RES_COLOR_VERT     CINDER_RESOURCE(../resources/, Color.vert, 133, GLSL)
+#define RES_COLOR_FRAG     CINDER_RESOURCE(../resources/, Color.frag, 134, GLSL)

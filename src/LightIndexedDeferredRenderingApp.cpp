@@ -65,6 +65,7 @@ void LIDRApp::setup()
    m_lightIndex = new lidr::LightIndex(getWindowWidth(), getWindowHeight());
    
    // Add some random lights
+   /*
    ci::Rand rand;
    for (int i = 0; i < 10; ++i)
    {
@@ -75,6 +76,14 @@ void LIDRApp::setup()
                                     rand.nextFloat(-offset, offset));
       m_lightIndex->setColor(id, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
       m_lightIndex->setAttenuation(id, rand.nextFloat(5.0f, 15.0f));
+   }*/
+   
+   {
+      lidr::LightId id = m_lightIndex->createLight();
+      
+      m_lightIndex->setPosition(id, 0.0f, WORLD_SIZE, 0.0f);
+      m_lightIndex->setColor(id, 255, 0, 0);
+      m_lightIndex->setAttenuation(id, WORLD_SIZE);
    }
    
    // Create shadow targets
@@ -110,8 +119,6 @@ void LIDRApp::update()
    double timeStamp = m_timer.getSeconds();
    double dt = timeStamp - m_lastTimeStamp;
    m_lastTimeStamp = timeStamp;
-   
-   m_lightIndex->update();
 
    CameraPersp camera(m_maya.getCamera());
    camera.setPerspective(60.0f, getWindowWidth() / (float)getWindowHeight(), 1.0f, 1000.0f);
@@ -128,9 +135,23 @@ void LIDRApp::draw()
    gl::setModelView(m_maya.getCamera());
    gl::setProjection(m_maya.getCamera());
    
+   m_lightIndex->update(gl::getModelView());
+   
    // Draw world
    m_lighting.bind();
+   m_lighting.uniform("lightIndexTex", 0);
+   m_lighting.uniform("lightPosTex", 1);
+   m_lighting.uniform("lightColorTex", 2);
+   
+   m_lightIndex->bindLightIndexTexture(0);
+   m_lightIndex->bindPositionTexture(1);
+   m_lightIndex->bindColorTexture(2);
+   
    m_world->simpleRender(Color8u(255, 20, 100));
+   
+   m_lightIndex->unbindLightIndexTexture();
+   m_lightIndex->unbindPositionTexture();
+   m_lightIndex->unbindColorTexture();
    m_lighting.unbind();
    
    // Draw shadow
