@@ -18,9 +18,10 @@ vec3 pointLight(vec4 lightPos, vec3 lightColor, vec3 pos, vec3 normal)
 {
    vec3 lightDir = lightPos.xyz - pos;
    float dist = length(lightDir);
-   lightDir = normalize(lightDir);
+   lightDir = lightDir / dist;
    
-   float intensity = max(0.0, dot(normal, lightDir)) * (1.0 - clamp(dist / lightPos.w, 0.0, 1.0));
+   float attenuation = 1.0 - clamp(dist / lightPos.w, 0.0, 1.0); // Linear attenuation
+   float intensity = max(0.0, dot(normal, lightDir)) * attenuation;
    return lightColor * intensity;
 }
 
