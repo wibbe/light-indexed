@@ -24,6 +24,7 @@ class LIDRApp : public AppBasic
       void setup();
       void mouseDown(MouseEvent event);
       void mouseDrag(MouseEvent event);
+      void keyDown(KeyEvent event);
       void update();
       void draw();
       
@@ -44,15 +45,18 @@ class LIDRApp : public AppBasic
       double m_lastTimeStamp;
       double m_stepTime;
       
+      bool m_debugMode;
+      
       ci::gl::GlslProg m_blurHoriz;
       ci::gl::GlslProg m_blurVert;
-      
       ci::gl::GlslProg m_lighting;
       
 };
 
 void LIDRApp::setup()
-{   
+{
+   m_debugMode = false;
+
    float offset = WORLD_SIZE * 0.55;
    m_shadowCamera.setOrtho(-offset, offset, -offset, offset, 1.0f, WORLD_SIZE * 2.0f);
    m_shadowCamera.lookAt(Vec3f(0.0f, WORLD_SIZE * 2.0f, 0.0f), Vec3f::zero());
@@ -94,7 +98,9 @@ void LIDRApp::setup()
    
    gl::enableDepthRead();
    gl::enableDepthWrite();
-   gl::enable(GL_TEXTURE_2D);
+   
+   glEnable(GL_TEXTURE_2D);
+   glDepthFunc(GL_LEQUAL);
    
    m_timer.start();
    m_lastTimeStamp = m_timer.getSeconds();
@@ -116,6 +122,12 @@ void LIDRApp::mouseDrag(MouseEvent event)
    m_maya.mouseDrag(event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown());
 }
 
+void LIDRApp::keyDown(KeyEvent event)
+{
+   if (event.getCode() == KeyEvent::KEY_d)
+      m_debugMode = !m_debugMode;
+}
+
 void LIDRApp::update()
 {
    double timeStamp = m_timer.getSeconds();
@@ -129,15 +141,33 @@ void LIDRApp::update()
 
 void LIDRApp::draw()
 {
-   drawShadow();
-   blurShadows();
+   static bool updateShadows = true;
    
-	gl::clear(Color(0.7, 0.7, 0.7));
+   if (updateShadows)
+   {
+      drawShadow();
+      blurShadows();
+      updateShadows = false;
+   }
+   
+   m_lightIndex->update(gl::getModelView());
+   
+	gl::clear(Color(0.8, 0.8, 0.8));
    
    gl::setModelView(m_maya.getCamera());
    gl::setProjection(m_maya.getCamera());
    
-   m_lightIndex->update(gl::getModelView());
+   // Start by filling the depth buffer
+   glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+   gl::enableDepthWrite();
+   m_world->simpleRender(Color8u(0, 0, 0));
+   
+   // No writing to the depth buffer 
+   gl::disableDepthWrite();
+   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+   
+   // Update light index texture
+   m_lightIndex->renderLightIndex();
    
    // Draw world
    m_lighting.bind();
@@ -154,6 +184,7 @@ void LIDRApp::draw()
    m_lightIndex->unbindLightIndexTexture();
    m_lightIndex->unbindPositionTexture();
    m_lightIndex->unbindColorTexture();
+   
    m_lighting.unbind();
    
    // Draw shadow
@@ -168,25 +199,26 @@ void LIDRApp::draw()
    
    m_shadow->unbindTexture();
    
-   // Update light index texture
-   gl::disableDepthWrite();
-   m_lightIndex->renderLightIndex();
-   gl::enableDepthWrite();
-   
    // Draw debug textures
-   gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
-   
-   m_lightIndex->bindLightIndexTexture(0);
-   gl::drawSolidRect(Rectf(10, getWindowHeight() - 138, 128 * getWindowAspectRatio(), getWindowHeight() - 10));
-   m_lightIndex->unbindLightIndexTexture();
-   
-   m_lightIndex->bindPositionTexture(0);
-   gl::drawSolidRect(Rectf(10, 10, 15, 266));
-   m_lightIndex->unbindPositionTexture();
-   
-   m_lightIndex->bindColorTexture(0);
-   gl::drawSolidRect(Rectf(20, 10, 25, 266));
-   m_lightIndex->unbindColorTexture();
+   if (m_debugMode)
+   {
+      gl::pushMatrices();
+      gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
+      
+      m_lightIndex->bindLightIndexTexture(0);
+      gl::drawSolidRect(Rectf(10, getWindowHeight() - 138, 128 * getWindowAspectRatio(), getWindowHeight() - 10));
+      m_lightIndex->unbindLightIndexTexture();
+      
+      m_lightIndex->bindPositionTexture(0);
+      gl::drawSolidRect(Rectf(10, 10, 15, 266));
+      m_lightIndex->unbindPositionTexture();
+      
+      m_lightIndex->bindColorTexture(0);
+      gl::drawSolidRect(Rectf(20, 10, 25, 266));
+      m_lightIndex->unbindColorTexture();
+      
+      gl::popMatrices();
+   }
 }
 
 void LIDRApp::drawShadow()
