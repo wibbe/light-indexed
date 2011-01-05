@@ -1,6 +1,7 @@
 
 varying vec3 diffuseColor;
 varying vec4 viewPos;
+varying vec3 viewNormal;
 varying vec4 coord;
 
 vec3 sphericalHarmonics(vec3 normal)
@@ -44,6 +45,7 @@ void main()
    coord = ftransform();
    
    vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+   viewNormal = normal;
    
    diffuseColor = sphericalHarmonics(normal);
 }
