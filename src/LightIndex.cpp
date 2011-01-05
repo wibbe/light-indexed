@@ -176,6 +176,8 @@ namespace lidr
       for (int i = 0; i < 4; ++i)
          m_channels[i].clear();
          
+      int sorted = 0;
+         
       // Go thru all the lights and try to sort them into a channel
       for (LightId id = 1, size = m_lights.size() + 1; id < size; ++id)
       {
@@ -183,9 +185,12 @@ namespace lidr
             if (!collideWithChannel(channel, id))
             {
                m_channels[channel].push_back(id);
+               sorted++;
                break;
             }
       }
+      
+      ci::app::console() << "Number of unused lights: " << (m_lights.size() - sorted) << "\n";
    }
    
    bool LightIndex::collideWithChannel(int channel, LightId id)
@@ -200,10 +205,10 @@ namespace lidr
          float x = light1.x - light2.x;
          float y = light1.y - light2.y;
          float z = light1.z - light2.z;
-         float currentDist = x * x + y * y + z * z;
+         float currentDist = std::sqrt(x * x + y * y + z * z);
          float attenuation = light1.attenuation + light2.attenuation;
          
-         if (currentDist <= (attenuation * attenuation))
+         if (currentDist <= attenuation)
             return true;
       }
       
@@ -274,39 +279,6 @@ namespace lidr
       
       gl::popMatrices();
       gl::setViewport(current);
-   
-      /*
-   
-      ci::Surface32f::Iter it = m_positionSurface.getIter();
-      size_t i = 0;
-      
-      while (it.line())
-      {
-         it.pixel();
-         
-         if (i == 0 || i > m_lights.size())
-         {
-            it.r() = 0;
-            it.g() = 0;
-            it.b() = 0;
-            it.a() = 0;
-         }
-         else
-         {
-            Light & light = m_lights[i - 1];
-            Vec3f pos = view.transformPoint(Vec3f(light.x, light.y, light.z));
-            ci::app::console() << pos << "\n";
-            
-            it.r() = pos.x;
-            it.g() = pos.y;
-            it.b() = pos.z;
-            it.a() = light.attenuation;
-         }
-         
-         i++;
-      }
-      
-      */
    }
    
 }
