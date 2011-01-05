@@ -68,8 +68,10 @@ namespace lidr
          ci::gl::Texture * m_colorTex;
          
          ci::gl::Fbo * m_colorIndex;
+         ci::gl::Fbo * m_positionFbo;
          
          ci::gl::GlslProg m_colorShader;
+         ci::gl::GlslProg m_positionShader;
          
          std::vector<LightId> m_channels[4];
    };

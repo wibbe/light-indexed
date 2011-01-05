@@ -23,8 +23,7 @@ void main()
    vec4 lightPos = texture2D(lightPosTex, vec2(0.5, lightIndex.x + 0.5 / 256.0));
    vec4 lightColor = texture2D(lightColorTex, vec2(0.5, lightIndex.x + 0.5 / 256.0));
    
-   //float l = distance(lightPos.xyz, viewPos.xyz / viewPos.w) / lightPos.w;
-   float l = lightPos.w / 2.0;
+   float l = 1.0 - clamp(distance(lightPos.xyz, viewPos.xyz) / lightPos.w, 0.0, 1.0);
    
    //gl_FragColor = vec4(lightPos.xyz, 1.0);
    gl_FragColor = vec4(l, l, l, 1.0);

@@ -36,6 +36,10 @@
 		D3BA714F12D3C267009A6ACC /* Color.vert in Sources */ = {isa = PBXBuildFile; fileRef = D3BA714E12D3C267009A6ACC /* Color.vert */; };
 		D3BA715012D3C336009A6ACC /* Color.frag in Resources */ = {isa = PBXBuildFile; fileRef = D3BA714C12D3C25C009A6ACC /* Color.frag */; };
 		D3BA715112D3C338009A6ACC /* Color.vert in Resources */ = {isa = PBXBuildFile; fileRef = D3BA714E12D3C267009A6ACC /* Color.vert */; };
+		D3BA720E12D4F5E1009A6ACC /* Position.vert in Sources */ = {isa = PBXBuildFile; fileRef = D3BA720D12D4F5E1009A6ACC /* Position.vert */; };
+		D3BA720F12D4F5E4009A6ACC /* Position.vert in Resources */ = {isa = PBXBuildFile; fileRef = D3BA720D12D4F5E1009A6ACC /* Position.vert */; };
+		D3BA721912D4F614009A6ACC /* Position.frag in Sources */ = {isa = PBXBuildFile; fileRef = D3BA721812D4F614009A6ACC /* Position.frag */; };
+		D3BA721A12D4F61E009A6ACC /* Position.frag in Resources */ = {isa = PBXBuildFile; fileRef = D3BA721812D4F614009A6ACC /* Position.frag */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +75,8 @@
 		D3BA6FBB12D39D56009A6ACC /* Simplex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Simplex.h; path = ../include/Simplex.h; sourceTree = SOURCE_ROOT; };
 		D3BA714C12D3C25C009A6ACC /* Color.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Color.frag; path = ../resources/Color.frag; sourceTree = SOURCE_ROOT; };
 		D3BA714E12D3C267009A6ACC /* Color.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Color.vert; path = ../resources/Color.vert; sourceTree = SOURCE_ROOT; };
+		D3BA720D12D4F5E1009A6ACC /* Position.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Position.vert; path = ../resources/Position.vert; sourceTree = SOURCE_ROOT; };
+		D3BA721812D4F614009A6ACC /* Position.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Position.frag; path = ../resources/Position.frag; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +173,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D3BA721812D4F614009A6ACC /* Position.frag */,
 				D3BA714E12D3C267009A6ACC /* Color.vert */,
 				D3BA6F5612D39887009A6ACC /* BlurHorizontal.frag */,
 				D3BA6F5712D39887009A6ACC /* BlurVertical.frag */,
@@ -176,6 +183,7 @@
 				8D1107310486CEB800E47090 /* Info.plist */,
 				00CCAF14116A9FEE008396D5 /* CinderApp.icns */,
 				D3BA714C12D3C25C009A6ACC /* Color.frag */,
+				D3BA720D12D4F5E1009A6ACC /* Position.vert */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -232,6 +240,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3BA720F12D4F5E4009A6ACC /* Position.vert in Resources */,
+				D3BA721A12D4F61E009A6ACC /* Position.frag in Resources */,
 				D3BA715112D3C338009A6ACC /* Color.vert in Resources */,
 				D3BA715012D3C336009A6ACC /* Color.frag in Resources */,
 				D3BA6F6012D3988C009A6ACC /* BlurHorizontal.frag in Resources */,
@@ -261,6 +271,8 @@
 				D3BA6FBA12D39CFF009A6ACC /* Simplex.cpp in Sources */,
 				D3BA714D12D3C25C009A6ACC /* Color.frag in Sources */,
 				D3BA714F12D3C267009A6ACC /* Color.vert in Sources */,
+				D3BA720E12D4F5E1009A6ACC /* Position.vert in Sources */,
+				D3BA721912D4F614009A6ACC /* Position.frag in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,27 +15,29 @@ namespace lidr
    
    LightIndex::LightIndex(int width, int height)
       : m_dirty(true),
-        m_positionSurface(1, 256, true),
         m_colorSurface(1, 256, false)
    {  
       // Create color index buffer, use alpha and color, but no depth
       m_colorIndex = new gl::Fbo(width, height, true, true, false);
       
-      gl::Texture::Format positionFormat;
-      positionFormat.setInternalFormat(GL_RGBA32F_ARB);
-      positionFormat.setMinFilter(GL_NEAREST);
-      positionFormat.setMagFilter(GL_NEAREST);
-      m_positionTex = new gl::Texture(1, 256, positionFormat);
-      
       m_colorTex = new gl::Texture(1, 256);
       
+      gl::Fbo::Format positionFormat;
+      positionFormat.setColorInternalFormat(GL_RGBA32F_ARB);
+      positionFormat.enableDepthBuffer(false);
+      positionFormat.enableMipmapping(false);
+      positionFormat.setMinFilter(GL_NEAREST);
+      positionFormat.setMagFilter(GL_NEAREST);
+      m_positionFbo = new gl::Fbo(1, 256, positionFormat);
+      
       m_colorShader = gl::GlslProg(app::loadResource(RES_COLOR_VERT), app::loadResource(RES_COLOR_FRAG));
+      m_positionShader = gl::GlslProg(app::loadResource(RES_POSITION_VERT), app::loadResource(RES_POSITION_FRAG));
    }
    
    LightIndex::~LightIndex()
    {
       delete m_colorIndex;
-      delete m_positionTex;
+      delete m_positionFbo;
       delete m_colorTex;
    }
    
@@ -97,12 +99,12 @@ namespace lidr
    
    void LightIndex::bindPositionTexture(int unit)
    {
-      m_positionTex->bind(unit);
+      m_positionFbo->bindTexture(unit);
    }
    
    void LightIndex::unbindPositionTexture()
    {
-      m_positionTex->unbind();
+      m_positionFbo->unbindTexture();
    }
    
    void LightIndex::bindColorTexture(int unit)
@@ -122,12 +124,6 @@ namespace lidr
          updateColorSurface();
          updatePositionSurface(view);
          
-         ci::Surface8u surface(reinterpret_cast<uint8_t*>(m_positionSurface.getData()),
-                               m_positionSurface.getWidth(),
-                               m_positionSurface.getHeight(),
-                               m_positionSurface.getRowBytes(),
-                               ci::SurfaceChannelOrder(ci::SurfaceChannelOrder::RGBA));
-         m_positionTex->update(surface);
          m_colorTex->update(m_colorSurface);
          
          sortLights();
@@ -242,8 +238,46 @@ namespace lidr
    
    void LightIndex::updatePositionSurface(Matrix44f const& view)
    {
+      Area current = gl::getViewport();
+      m_positionFbo->bindFramebuffer();
+      m_positionShader.bind();
+      
+      gl::pushMatrices();
+      gl::setMatricesWindow(1, 256);
+      
+      gl::clear(ColorA(0, 0, 0, 0), false);
+      
+      glBegin(GL_POINTS);
+      
+      for (int i = 0; i < 256; ++i)
+      {
+         if (i == 0 || i > m_lights.size())
+         {
+            glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
+            glVertex3i(0, 256 - i, 0);
+         }
+         else
+         {
+            Light & light = m_lights[i - 1];
+            Vec3f pos = view.transformPoint(Vec3f(light.x, light.y, light.z));
+            
+            glColor4f(pos.x, pos.y, pos.z, light.attenuation);
+            glVertex3i(0, 256 - i, 0);
+         }
+      }
+      
+      glEnd();
+      
+      m_positionShader.unbind();
+      m_positionFbo->unbindFramebuffer();
+      
+      gl::popMatrices();
+      gl::setViewport(current);
+   
+      /*
+   
       ci::Surface32f::Iter it = m_positionSurface.getIter();
-      size_t i = 0;    
+      size_t i = 0;
       
       while (it.line())
       {
@@ -270,6 +304,8 @@ namespace lidr
          
          i++;
       }
+      
+      */
    }
    
 }
