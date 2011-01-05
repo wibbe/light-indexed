@@ -119,10 +119,11 @@ namespace lidr
    
    void LightIndex::update(Matrix44f const& view)
    {
-      //if (m_dirty)
+      updatePositionSurface(view);
+   
+      if (m_dirty)
       {
          updateColorSurface();
-         updatePositionSurface(view);
          
          m_colorTex->update(m_colorSurface);
          
