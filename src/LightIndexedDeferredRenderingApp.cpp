@@ -65,19 +65,20 @@ void LIDRApp::setup()
    m_lightIndex = new lidr::LightIndex(getWindowWidth(), getWindowHeight());
    
    // Add some random lights
-   /*
+   
    ci::Rand rand;
-   for (int i = 0; i < 10; ++i)
+   for (int i = 0; i < 100; ++i)
    {
       lidr::LightId id = m_lightIndex->createLight();
       
-      m_lightIndex->setPosition(id, rand.nextFloat(-offset, offset),
-                                    rand.nextFloat(-offset, offset),
-                                    rand.nextFloat(-offset, offset));
+      m_lightIndex->setPosition(id, -offset + rand.nextFloat(offset * 2.0f),
+                                    -offset + rand.nextFloat(offset * 2.0f),
+                                    -offset + rand.nextFloat(offset * 2.0f));
       m_lightIndex->setColor(id, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
-      m_lightIndex->setAttenuation(id, rand.nextFloat(5.0f, 15.0f));
-   }*/
+      m_lightIndex->setAttenuation(id, rand.nextFloat(2.0f, 10.0f));
+   }
    
+   /*
    {
       lidr::LightId id = m_lightIndex->createLight();
       
@@ -85,6 +86,7 @@ void LIDRApp::setup()
       m_lightIndex->setColor(id, 255, 0, 0);
       m_lightIndex->setAttenuation(id, WORLD_SIZE);
    }
+   */
    
    // Create shadow targets
    m_shadow = new gl::Fbo(128, 128, true);
