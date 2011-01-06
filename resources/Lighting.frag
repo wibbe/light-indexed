@@ -20,14 +20,14 @@ vec3 pointLight(vec4 lightPos, vec3 lightColor, vec3 pos, vec3 normal)
    float dist = length(lightDir);
    lightDir = lightDir / dist;
    
-   float attenuation = 1.0 - clamp(dist / lightPos.w, 0.0, 1.0); // Linear attenuation
-   float intensity = max(0.0, dot(normal, lightDir)) * attenuation;
+   float attenuation = 1.0 - clamp(dist / lightPos.w, 0.0, 1.0);
+   float intensity = max(0.0, dot(normal, lightDir)) * attenuation * attenuation;
    return lightColor * intensity;
 }
 
 void main()
 {
-   vec3 color = diffuseColor * 0.1;
+   vec3 color = diffuseColor * 0.2;
    vec2 uv = ((coord.xy / coord.w) + 1.0) * 0.5;
    vec3 normal = normalize(viewNormal);
    
