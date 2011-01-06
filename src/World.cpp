@@ -5,6 +5,7 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Vector.h"
+#include "cinder/app/App.h"
 
 World::World(size_t size)
    : m_size(size)
@@ -81,6 +82,10 @@ void World::simpleRender(ci::Color8u const& color)
 
 void World::generateMesh(ci::TriMesh & mesh)
 {
+   using namespace ci;
+   
+   Vec3f offset = Vec3f(m_size * -0.5f, m_size * -0.5f, m_size * -0.5f);
+   
    for (size_t z = 0; z < m_size; ++z)
       for (size_t y = 0; y < m_size; ++y)
          for (size_t x = 0; x < m_size; ++x)
@@ -89,8 +94,48 @@ void World::generateMesh(ci::TriMesh & mesh)
             {
                for (size_t i = 0; i < 6; ++i)
                {
-                  if (int index = getNeigbour(x, y, z, i) != -1)
+                  int index = getNeigbour(x, y, z, i);
+                  
+                  if (index != -1)
                   {
+                     if (cell(index) == DIRT)
+                     {
+                        Vec3f normal = getNeigbourOffset(i);
+                        Vec3f up = std::abs(normal.dot(Vec3f::yAxis())) > 0.9f ? Vec3f::zAxis() : Vec3f::yAxis();                   
+                        Vec3f side = normal.cross(up) * 0.5f;
+                        up = up * 0.5f;
+                        
+                        Vec3f pos = offset + Vec3f(x, y, z) + (normal * 0.5f);
+                        
+                        size_t indexStart = mesh.getNumVertices();
+                        
+                        
+                        // Layout of the quad
+                        //
+                        // 0 --------------- 3
+                        // |        ^ up     |
+                        // |        |        |
+                        // |  side  |        |
+                        // |  <-----o pos    |
+                        // |                 |
+                        // |                 |
+                        // |                 |
+                        // 1 --------------- 2
+                        
+                        // Create the vertex data
+                        mesh.appendVertex(pos + side + up);
+                        mesh.appendVertex(pos + side - up);
+                        mesh.appendVertex(pos - side - up);
+                        mesh.appendVertex(pos - side + up);
+                        mesh.appendNormal(-normal);
+                        mesh.appendNormal(-normal);
+                        mesh.appendNormal(-normal);
+                        mesh.appendNormal(-normal);
+                        
+                        // Create triangle data
+                        mesh.appendTriangle(indexStart + 0, indexStart + 1, indexStart + 2);
+                        mesh.appendTriangle(indexStart + 0, indexStart + 2, indexStart + 3);
+                     }
                   }
                }
             }

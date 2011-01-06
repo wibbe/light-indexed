@@ -42,6 +42,12 @@ class World
          return m_cells[i];
       }
       
+      inline size_t cell(size_t index) const
+      {
+         assert(index < m_cells.size());
+         return m_cells[index];
+      }
+      
       inline void set(size_t x, size_t y, size_t z, size_t value)
       {
          size_t i = getIndex(x, y, z);
@@ -51,7 +57,22 @@ class World
       
    private:
    
-      inline int getNeigbour(int x, int y, int z, int i)
+      inline int getNeigbour(int x, int y, int z, int i) const
+      {
+         ci::Vec3<int> offset = getNeigbourOffset(i);
+         
+         if ((x + offset.x) >= 0 &&
+             (x + offset.x) < m_size &&
+             (y + offset.y) >= 0 &&
+             (y + offset.y) < m_size &&
+             (z + offset.z) >= 0 &&
+             (z + offset.z) < m_size)
+            return getIndex(x + offset.x, y + offset.y, z + offset.z);
+            
+         return -1;
+      }
+      
+      inline ci::Vec3<int> getNeigbourOffset(int i) const
       {
          assert(i < 24);
          
@@ -85,15 +106,7 @@ class World
             ci::Vec3<int>( 1,  1,  1)
          };
          
-         if ((x + offsets[i].x) >= 0 &&
-             (x + offsets[i].x) < m_size &&
-             (y + offsets[i].y) >= 0 &&
-             (y + offsets[i].y) < m_size &&
-             (z + offsets[i].z) >= 0 &&
-             (z + offsets[i].z) < m_size)
-            return getIndex(x + offsets[i].x, y + offsets[i].y, z + offsets[i].z);
-            
-         return -1;
+         return offsets[i];
       }
       
    private:

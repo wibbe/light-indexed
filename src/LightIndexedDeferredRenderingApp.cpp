@@ -51,6 +51,7 @@ class LIDRApp : public AppBasic
       ci::gl::GlslProg m_blurVert;
       ci::gl::GlslProg m_lighting;
       
+      ci::TriMesh m_worldMesh;
 };
 
 void LIDRApp::setup()
@@ -64,7 +65,10 @@ void LIDRApp::setup()
    // Create world
    m_world = new World(WORLD_SIZE);
    m_world->buildFloatingMountain();
+   m_world->generateMesh(m_worldMesh);
    
+   console() << "Number of triangles: " << m_worldMesh.getNumTriangles() << std::endl;
+
    // Create the light index
    m_lightIndex = new lidr::LightIndex(getWindowWidth(), getWindowHeight());
    
@@ -79,18 +83,8 @@ void LIDRApp::setup()
                                     -offset + rand.nextFloat(offset * 2.0f),
                                     -offset + rand.nextFloat(offset * 2.0f));
       m_lightIndex->setColor(id, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
-      m_lightIndex->setAttenuation(id, rand.nextFloat(2.0f, 10.0f));
+      m_lightIndex->setAttenuation(id, rand.nextFloat(2.0f, 6.0f));
    }
-   
-   /*
-   {
-      lidr::LightId id = m_lightIndex->createLight();
-      
-      m_lightIndex->setPosition(id, 0.0f, WORLD_SIZE, 0.0f);
-      m_lightIndex->setColor(id, 255, 0, 0);
-      m_lightIndex->setAttenuation(id, WORLD_SIZE);
-   }
-   */
    
    // Create shadow targets
    m_shadow = new gl::Fbo(128, 128, true);
@@ -101,6 +95,7 @@ void LIDRApp::setup()
    
    glEnable(GL_TEXTURE_2D);
    glDepthFunc(GL_LEQUAL);
+   glFrontFace(GL_CCW);
    
    m_timer.start();
    m_lastTimeStamp = m_timer.getSeconds();
@@ -146,7 +141,9 @@ void LIDRApp::draw()
    if (updateShadows)
    {
       drawShadow();
-      blurShadows();
+      
+      for (int i = 0; i < 3; ++i)
+         blurShadows();
       updateShadows = false;
    }
    
@@ -160,7 +157,8 @@ void LIDRApp::draw()
    // Start by filling the depth buffer
    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
    gl::enableDepthWrite();
-   m_world->simpleRender(Color8u(0, 0, 0));
+   
+   gl::draw(m_worldMesh);
    
    // No writing to the depth buffer 
    gl::disableDepthWrite();
@@ -179,7 +177,7 @@ void LIDRApp::draw()
    m_lightIndex->bindPositionTexture(1);
    m_lightIndex->bindColorTexture(2);
    
-   m_world->simpleRender(Color8u(255, 20, 100));
+   gl::draw(m_worldMesh);
    
    m_lightIndex->unbindLightIndexTexture();
    m_lightIndex->unbindPositionTexture();
@@ -193,8 +191,8 @@ void LIDRApp::draw()
    float size = WORLD_SIZE * 1.2f;
    
    gl::enableAlphaBlending();
-   gl::color(ColorA8u(255, 255, 255, 200));
-   gl::drawBillboard(Vec3f(0.0f, -WORLD_SIZE, 0.0f), Vec2f(size, size), 0.0f, Vec3f(1.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f));
+   gl::color(ColorA8u(255, 255, 255, 100));
+   gl::drawBillboard(Vec3f(0.0f, WORLD_SIZE * -0.6f, 0.0f), Vec2f(size, size), 0.0f, Vec3f(1.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f));
    gl::disableAlphaBlending();
    
    m_shadow->unbindTexture();
